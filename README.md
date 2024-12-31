@@ -1,1 +1,1 @@
-# postgres-patroni
+# pgskipper-patroni
