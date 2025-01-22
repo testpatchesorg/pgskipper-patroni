@@ -78,7 +78,7 @@ RUN apt update && apt-get install -y git make gcc && \
 RUN apt-get install -y alien
 
 RUN cat /root/.pip/pip.conf
-RUN python3 -m pip install -U setuptools
+RUN python3 -m pip install -U setuptools==70.0.0
 RUN python3 -m pip install psutil patroni[kubernetes,etcd]==3.3.2 psycopg2-binary==2.9.5 requests python-dateutil urllib3 six prettytable --no-cache
 RUN mv /var/lib/postgresql /var/lib/pgsql
 
