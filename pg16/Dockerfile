@@ -59,6 +59,10 @@ RUN localedef -i en_US -f UTF-8 en_US.UTF-8 && \
     localedef -i es_PE -f UTF-8 es_PE.UTF-8 && \
     localedef -i es_ES -f UTF-8 es_ES.UTF-8
 
+RUN wget https://github.com/zubkov-andrei/pg_profile/releases/download/4.8/pg_profile--4.8.tar.gz && \
+    tar -xzf pg_profile--4.8.tar.gz --directory $(pg_config --sharedir)/extension && \
+    rm -rf pg_profile--4.8.tar.gz
+
 # Install pgsentinel and pg_dbms_stats
 RUN apt update && apt-get install -y git make gcc && \
     git clone https://github.com/pgsentinel/pgsentinel.git && \
