@@ -24,11 +24,13 @@ jobs:
       matrix:
         component:
           - name: pgskipper-patroni-16
-            file: pg16/Dockerfile
+            file: Dockerfile
             context: ""
+            pg_version: "16"
           - name: pgskipper-patroni-15
-            file: pg15/Dockerfile
+            file: Dockerfile
             context: ""
+            pg_version: "15"
     runs-on: ubuntu-24.04
     steps:
       - name: Validate
@@ -65,6 +67,7 @@ jobs:
           no-cache: true
           context: ${{ matrix.component.context }}
           file: ${{ matrix.component.file }}
+          build-args: PG_VERSION=${{ matrix.component.pg_version }}
           platforms: linux/amd64 #,linux/arm64 extensions required
           push: ${{ env.PUSH }}
           tags: ghcr.io/netcracker/${{ matrix.component.name }}:${{ env.TAG_NAME }}
