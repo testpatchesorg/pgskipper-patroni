@@ -99,6 +99,13 @@ RUN chgrp 0 /etc &&  \
     chmod 777 /opt/scripts/archive_wal.sh && \
     ln -s /usr/bin/python3 /usr/bin/python
 
+RUN chmod 770 /var/lib/pgbackrest && \
+    chmod 770 /var/log/pgbackrest && \
+    chmod 770 /var/spool/pgbackrest && \
+    chown postgres:0 /var/lib/pgbackrest && \
+    chown postgres:0 /var/log/pgbackrest && \
+    chown postgres:0 /var/spool/pgbackrest
+    
 # Volumes are defined to support read-only root file system
 VOLUME /etc
 VOLUME /patroni
