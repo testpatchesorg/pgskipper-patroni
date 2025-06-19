@@ -80,7 +80,7 @@ RUN apt update && apt-get install -y git make gcc && \
 RUN apt-get install -y alien
 
 RUN cat /root/.pip/pip.conf
-RUN python3 -m pip install -U setuptools==70.0.0 wheel==0.38.0
+RUN python3 -m pip install -U setuptools==78.1.1 wheel==0.38.0
 RUN python3 -m pip install psutil patroni[kubernetes,etcd]==3.3.5 psycopg2-binary==2.9.5 requests python-dateutil urllib3 six prettytable --no-cache
 # Explicitly install patched libaom3 version
 RUN apt-get --no-install-recommends install -y libaom3=3.3.0-1ubuntu0.1 || apt-get --no-install-recommends install -y libaom3
