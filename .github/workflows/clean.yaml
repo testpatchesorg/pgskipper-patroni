@@ -12,6 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         component:
+          - name: pgskipper-patroni-17
+            context: ""
           - name: pgskipper-patroni-16
             context: ""
           - name: pgskipper-patroni-15
