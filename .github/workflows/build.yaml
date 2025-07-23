@@ -72,7 +72,7 @@ jobs:
           context: ${{ matrix.component.context }}
           file: ${{ matrix.component.file }}
           build-args: PG_VERSION=${{ matrix.component.pg_version }}
-          platforms: linux/amd64 #,linux/arm64 extensions required
+          platforms: linux/amd64,linux/arm64
           push: ${{ env.PUSH }}
           tags: ghcr.io/netcracker/${{ matrix.component.name }}:${{ env.TAG_NAME }}
           provenance: false
