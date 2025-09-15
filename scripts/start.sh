@@ -55,6 +55,12 @@ then
 
 fi
 
+if [ -n "$PGBACKREST_PG1_PATH" ]; then
+    echo "Create spool directory for pgbackrest..."
+    mkdir -p /var/lib/pgsql/data/pgbackrest/spool
+    chmod -R 770 /var/lib/pgsql/data/pgbackrest
+fi
+
 if [ -n "$PGBACKREST_PG2_HOST" ]; then
     echo "Preparation for standby backup..."
     mkdir -p ${HOME}
