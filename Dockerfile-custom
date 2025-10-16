@@ -35,6 +35,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG CUSTOM_PG_VERSION=17.6-2
 ARG CUSTOM_PG_URL=https://github.com/testpatchesorg/postgres-patches/releases/download/${CUSTOM_PG_VERSION}
 RUN mkdir -p ./pgdebs && cd ./pgdebs && \
+    apt-get update && apt-get install -y wget && \
     wget  ${CUSTOM_PG_URL}/libecpg-compat3_${CUSTOM_PG_VERSION}_amd64.deb \
     ${CUSTOM_PG_URL}/libecpg-dev_${CUSTOM_PG_VERSION}_amd64.deb \
     ${CUSTOM_PG_URL}/libecpg6_${CUSTOM_PG_VERSION}_amd64.deb \
