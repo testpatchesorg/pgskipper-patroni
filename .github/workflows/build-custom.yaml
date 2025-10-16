@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_docker:
-        description: "Publish image to ghcr.io/netcracker/pgskipper-patroni"
+        description: "Publish image to ghcr.io/${{ github.repository_owner }}/pgskipper-patroni"
         type: boolean
         default: false
         required: false
