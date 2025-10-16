@@ -30,6 +30,10 @@ COPY ./scripts/postgresql.conf /tmp/postgresql.conf
 COPY ./scripts/fix_permission.sh /usr/libexec/fix-permissions
 ADD ./scripts/* /
 
+RUN echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+RUN ls -la /etc/apt/
+RUN apt-get -y update
+
 #######################################################################################
 ARG DEBIAN_FRONTEND=noninteractive
 ARG CUSTOM_PG_VERSION=17.6-2
@@ -49,19 +53,14 @@ RUN mkdir -p ./pgdebs && cd ./pgdebs && \
     ${CUSTOM_PG_URL}/postgresql-pltcl-${PG_VERSION}_${CUSTOM_PG_VERSION}_amd64.deb \
     ${CUSTOM_PG_URL}/postgresql-server-dev-${PG_VERSION}_${CUSTOM_PG_VERSION}_amd64.deb && \
     cd .. && \
-    apt-get update && \
-    apt-get upgrade -y && \
     apt install -y --fix-missing --allow-downgrades ./pgdebs/*.deb && rm -rf ./pgdebs
 ########################################################################################
 
 
-RUN echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
-RUN ls -la /etc/apt/
-RUN apt-get -y update
 RUN apt-get -o DPkg::Options::="--force-confnew" -y dist-upgrade
 RUN apt-get update && \
     apt-get install -y --allow-downgrades gcc-12 cpp-12 gcc-12-base libgcc-12-dev libstdc++6 libgcc-s1 libnsl2
-RUN apt-get --no-install-recommends install -y python3.11 python3-pip python3-dev libpq-dev cython3 wget curl libc6
+RUN apt-get --no-install-recommends install -y python3.11 python3-pip python3-dev libpq-dev cython3 wget curl
 
 # rename 'tape' group to 'postgres' and creating postgres user - hask for ubuntu
 RUN groupmod -n postgres tape
