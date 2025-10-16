@@ -36,6 +36,7 @@ jobs:
             file: Dockerfile-custom
             context: ""
             pg_version: ${{ inputs.postgres_version || '17' }}
+            custom_pg_version: ${{ inputs.custom_postgres_version || '17.6-2' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Validate
@@ -74,7 +75,7 @@ jobs:
           file: ${{ matrix.component.file }}
           build-args: |
             PG_VERSION=${{ matrix.component.pg_version }}
-            CUSTOM_PG_VERSION=${{ inputs.custom_postgres_version || '17.6-2' }}
+            CUSTOM_PG_VERSION=${{ matrix.component.custom_pg_version }}
           platforms: linux/amd64,linux/arm64
           push: ${{ env.PUSH }}
           tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.component.name }}:${{ env.TAG_NAME }}
