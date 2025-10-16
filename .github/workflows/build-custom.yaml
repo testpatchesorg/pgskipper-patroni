@@ -1,10 +1,5 @@
 name: Build Artifacts with custom patches
 on:
-  release:
-    types: [created]
-  push:
-    branches:
-      - '**'
   workflow_dispatch:
     inputs:
       postgres_version:
