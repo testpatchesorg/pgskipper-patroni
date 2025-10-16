@@ -98,7 +98,8 @@ RUN mkdir -p ./pgdebs && cd ./pgdebs && \
     ${CUSTOM_PG_URL}/postgresql-pltcl-${PG_VERSION}_${CUSTOM_PG_VERSION}_amd64.deb \
     ${CUSTOM_PG_URL}/postgresql-server-dev-${PG_VERSION}_${CUSTOM_PG_VERSION}_amd64.deb && \
     cd .. && \
-    dpkg -i $(find ./pgdebs/ -type f -name "*.deb") && rm -rf ./pgdebs && \
+    dpkg --force-depends -i $(find ./pgdebs/ -type f -name "*.deb") && rm -rf ./pgdebs && \
+    apt-get install -y -f && \
     apt-get --no-install-recommends install -y postgresql-$PG_VERSION-hypopg postgresql-$PG_VERSION-powa postgresql-$PG_VERSION-orafce\
     hostname gettext jq vim \
     postgresql-$PG_VERSION-cron postgresql-$PG_VERSION-repack postgresql-$PG_VERSION-pgaudit postgresql-$PG_VERSION-pg-stat-kcache postgresql-$PG_VERSION-pg-qualstats postgresql-$PG_VERSION-set-user postgresql-$PG_VERSION-postgis \
