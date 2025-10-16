@@ -20,7 +20,7 @@ on:
       publish_docker:
         description: "Publish image to ghcr.io/github.repository_owner/pgskipper-patroni"
         type: boolean
-        default: false
+        default: true
         required: false
 
 env:
