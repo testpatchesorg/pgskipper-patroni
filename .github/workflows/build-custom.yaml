@@ -1,5 +1,5 @@
 name: Build Artifacts with custom patches
-run-name: "PG version: ${{ inputs.postgres_version. Custom PG version: ${{ inputs.custom_postgres_version }}"
+run-name: "PG ${{ inputs.postgres_version. Custom PG ${{ inputs.custom_postgres_version }}"
 on:
   workflow_dispatch:
     inputs:
