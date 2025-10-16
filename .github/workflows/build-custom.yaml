@@ -7,6 +7,20 @@ on:
       - '**'
   workflow_dispatch:
     inputs:
+      postgres_version:
+        description: "PostgreSQL version to build (15, 16, 17)"
+        type: choice
+        options:
+          - "15"
+          - "16"
+          - "17"
+        default: "17"
+        required: false
+      custom_postgres_version:
+        description: "Custom PostgreSQL version label (e.g. 17.3-1)"
+        type: string
+        default: "17.6-2"
+        required: false
       publish_docker:
         description: "Publish image to ghcr.io/github.repository_owner/pgskipper-patroni"
         type: boolean
@@ -26,7 +40,7 @@ jobs:
           - name: pgskipper-patroni-17
             file: Dockerfile-custom
             context: ""
-            pg_version: "17.6"
+            pg_version: ${{ inputs.postgres_version || '17' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Validate
@@ -63,7 +77,9 @@ jobs:
           no-cache: true
           context: ${{ matrix.component.context }}
           file: ${{ matrix.component.file }}
-          build-args: PG_VERSION=${{ matrix.component.pg_version }}
+          build-args: |
+            PG_VERSION=${{ matrix.component.pg_version }}
+            CUSTOM_PG_VERSION=${{ inputs.custom_postgres_version || '17.6-2' }}
           platforms: linux/amd64,linux/arm64
           push: ${{ env.PUSH }}
           tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.component.name }}:${{ env.TAG_NAME }}
