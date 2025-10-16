@@ -60,14 +60,14 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
       - name: Prepare Tag
         run: echo "TAG_NAME=$(echo ${TAG_NAME} | sed 's@refs/tags/@@;s@refs/heads/@@;s@/@_@g')" >> $GITHUB_ENV
-      - name: Get package IDs for delete
-        id: get-ids-for-delete
-        uses: Netcracker/get-package-ids@v0.0.1
-        with:
-          component-name: ${{ matrix.component.name }}
-          component-tag: ${{ env.TAG_NAME }}
-          access-token: ${{secrets.GITHUB_TOKEN}}
-        if: ${{ env.PUSH }}
+      # - name: Get package IDs for delete
+      #   id: get-ids-for-delete
+      #   uses: Netcracker/get-package-ids@v0.0.1
+      #   with:
+      #     component-name: ${{ matrix.component.name }}
+      #     component-tag: ${{ env.TAG_NAME }}
+      #     access-token: ${{secrets.GITHUB_TOKEN}}
+      #   if: ${{ env.PUSH }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -81,9 +81,9 @@ jobs:
           push: ${{ env.PUSH }}
           tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.component.name }}:${{ env.TAG_NAME }}
           provenance: false
-      - uses: actions/delete-package-versions@v5
-        with:
-          package-name: ${{ matrix.component.name }}
-          package-type: 'container'
-          package-version-ids: ${{ steps.get-ids-for-delete.outputs.ids-for-delete }}
-        if: ${{ steps.get-ids-for-delete.outputs.ids-for-delete != '' }}
+      # - uses: actions/delete-package-versions@v5
+      #   with:
+      #     package-name: ${{ matrix.component.name }}
+      #     package-type: 'container'
+      #     package-version-ids: ${{ steps.get-ids-for-delete.outputs.ids-for-delete }}
+      #   if: ${{ steps.get-ids-for-delete.outputs.ids-for-delete != '' }}
