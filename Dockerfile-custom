@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:22.04
 
 USER root
 
@@ -173,7 +173,7 @@ RUN chmod 777 /var/lib/pgbackrest && \
     chown postgres:0 /var/lib/pgbackrest && \
     chown postgres:0 /var/log/pgbackrest && \
     chown postgres:0 /var/spool/pgbackrest
-    
+
 # Volumes are defined to support read-only root file system
 VOLUME /etc
 VOLUME /patroni
