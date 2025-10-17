@@ -86,19 +86,19 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         gnupg wget curl python3.11 python3-pip python3-dev libpq-dev cython3 \
-        postgresql-$PG_VERSION postgresql-contrib-$PG_VERSION postgresql-plpython3-$PG_VERSION \
-        postgresql-$PG_VERSION-hypopg postgresql-$PG_VERSION-powa postgresql-$PG_VERSION-orafce \
         hostname gettext jq vim \
+        ldap-utils libldap-2.5-0 libsasl2-modules-gssapi-mit libldap-common \
+        alien vmtouch openssh-server libaom3=3.3.0-1ubuntu0.1 && \
+    apt-get install -y --no-install-recommends postgresql-$PG_VERSION postgresql-contrib-$PG_VERSION postgresql-plpython3-$PG_VERSION \
+        postgresql-$PG_VERSION-hypopg postgresql-$PG_VERSION-powa postgresql-$PG_VERSION-orafce \
         postgresql-$PG_VERSION-cron postgresql-$PG_VERSION-repack postgresql-$PG_VERSION-pgaudit \
         postgresql-$PG_VERSION-pg-stat-kcache postgresql-$PG_VERSION-pg-qualstats \
         postgresql-$PG_VERSION-set-user postgresql-$PG_VERSION-postgis \
         postgresql-$PG_VERSION-pg-wait-sampling postgresql-$PG_VERSION-pg-track-settings \
         postgresql-$PG_VERSION-pg-hint-plan postgresql-$PG_VERSION-pgnodemx \
         postgresql-$PG_VERSION-decoderbufs postgresql-$PG_VERSION-pglogical \
-        postgresql-$PG_VERSION-pgvector \
-        ldap-utils libldap-2.5-0 libsasl2-modules-gssapi-mit libldap-common \
-        alien vmtouch openssh-server libaom3=3.3.0-1ubuntu0.1
-
+        postgresql-$PG_VERSION-pgvector && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Локализация
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8 && \
