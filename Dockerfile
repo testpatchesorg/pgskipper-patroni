@@ -30,15 +30,16 @@ COPY ./scripts/postgresql.conf /tmp/postgresql.conf
 COPY ./scripts/fix_permission.sh /usr/libexec/fix-permissions
 ADD ./scripts/* /
 
-RUN echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" >> /etc/apt/sources.list.d/pgdg.list && \
-    wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
+RUN echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 RUN ls -la /etc/apt/
 RUN apt-get -y update
 RUN apt-get -o DPkg::Options::="--force-confnew" -y dist-upgrade
 RUN apt-get update && \
     apt-get install -y --allow-downgrades gcc-12 cpp-12 gcc-12-base libgcc-12-dev libstdc++6 libgcc-s1 libnsl2
-RUN apt-get --no-install-recommends install -y python3.11 python3-pip python3-dev libpq-dev cython3 wget curl
+RUN apt-get --no-install-recommends install -y python3.11 python3-pip python3-dev libpq-dev cython3 wget curl && \
+    wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
+
 
 # rename 'tape' group to 'postgres' and creating postgres user - hask for ubuntu
 RUN groupmod -n postgres tape
