@@ -36,6 +36,7 @@ RUN cd /tmp && \
 
 # Установка pg_profile
 RUN wget https://github.com/zubkov-andrei/pg_profile/releases/download/4.8/pg_profile--4.8.tar.gz && \
+    mkdir -p $(pg_config --sharedir)/extension && \
     tar -xzf pg_profile--4.8.tar.gz --directory $(pg_config --sharedir)/extension && \
     rm -rf pg_profile--4.8.tar.gz
 
