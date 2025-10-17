@@ -108,13 +108,6 @@ RUN wget https://github.com/zubkov-andrei/pg_profile/releases/download/4.8/pg_pr
     tar -xzf pg_profile--4.8.tar.gz --directory $(pg_config --sharedir)/extension && \
     rm -rf pg_profile--4.8.tar.gz
 
-# Add swap file to improve performance in container environments
-RUN fallocate -l 1G /swapfile && \
-    chmod 600 /swapfile && \
-    mkswap /swapfile && \
-    sudo swapon /swapfile && \
-    echo '/swapfile none swap sw 0 0' | tee -a /etc/fstab
-
 # Install pgsentinel and pg_dbms_stats
 RUN apt clean && apt update && apt-get install -y git make gcc && \
     git clone https://github.com/pgsentinel/pgsentinel.git && \
