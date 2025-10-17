@@ -146,6 +146,9 @@ RUN mv /var/lib/postgresql /var/lib/pgsql && \
     chmod +x /*.py && chmod +x /*.sh && \
     chmod 777 /opt/scripts/archive_wal.sh && \
     ln -s /usr/bin/python3 /usr/bin/python && \
+    mkdir /var/lib/pgbackrest && \
+    mkdir /var/log/pgbackrest && \
+    mkdir /var/spool/pgbackrest && \
     chmod 777 /var/lib/pgbackrest && \
     chmod 777 /var/log/pgbackrest && \
     chmod 777 /var/spool/pgbackrest && \
