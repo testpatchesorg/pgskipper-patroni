@@ -1,10 +1,10 @@
 name: Build Artifacts
 on:
-  release:
-    types: [created]
-  push:
-    branches:
-      - '**'
+  # release:
+  #   types: [created]
+  # push:
+  #   branches:
+  #     - '**'
   workflow_dispatch:
     inputs:
       publish_docker:
