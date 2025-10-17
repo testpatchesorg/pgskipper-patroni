@@ -34,7 +34,7 @@ RUN echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg m
 RUN ls -la /etc/apt/
 RUN apt-get -y update
 RUN apt-get -o DPkg::Options::="--force-confnew" -y dist-upgrade
-RUN apt-get update && \
+RUN apt clean && apt-get update && \
     apt-get install -y --allow-downgrades gcc-12 cpp-12 gcc-12-base libgcc-12-dev libstdc++6 libgcc-s1 libnsl2 gnupg
 RUN apt-get --no-install-recommends install -y python3.11 python3-pip python3-dev libpq-dev cython3 wget curl && \
     wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
