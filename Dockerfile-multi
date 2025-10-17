@@ -82,14 +82,14 @@ RUN apt-get update && \
     apt-get install -y gnupg wget && \
     echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" >> /etc/apt/sources.list.d/pgdg.list && \
     wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8 && \
-    apt-get update && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         gnupg wget curl python3.11 python3-pip python3-dev libpq-dev cython3 \
         hostname gettext jq vim \
         ldap-utils libldap-2.5-0 libsasl2-modules-gssapi-mit libldap-common \
-        alien vmtouch openssh-server libaom3=3.3.0-1ubuntu0.1 && \
-    apt-get install -y --no-install-recommends postgresql-$PG_VERSION postgresql-contrib-$PG_VERSION postgresql-plpython3-$PG_VERSION \
+        alien vmtouch openssh-server libaom3=3.3.0-1ubuntu0.1
+RUN apt-get install -y --no-install-recommends postgresql-$PG_VERSION postgresql-contrib-$PG_VERSION postgresql-plpython3-$PG_VERSION \
         postgresql-$PG_VERSION-hypopg postgresql-$PG_VERSION-powa postgresql-$PG_VERSION-orafce \
         postgresql-$PG_VERSION-cron postgresql-$PG_VERSION-repack postgresql-$PG_VERSION-pgaudit \
         postgresql-$PG_VERSION-pg-stat-kcache postgresql-$PG_VERSION-pg-qualstats \
