@@ -77,7 +77,10 @@ ENV POD_IDENTITY="node1" \
     PATH="/usr/lib/postgresql/$PG_VERSION/bin/:${PATH}"
 
 # Установка runtime-зависимостей
-RUN apt-get update && \
+RUN echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" >> /etc/apt/sources.list.d/pgdg.list && \
+    wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8 && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         gnupg wget curl python3.11 python3-pip python3-dev libpq-dev cython3 \
         postgresql-$PG_VERSION postgresql-contrib-$PG_VERSION postgresql-plpython3-$PG_VERSION \
@@ -91,12 +94,8 @@ RUN apt-get update && \
         postgresql-$PG_VERSION-decoderbufs postgresql-$PG_VERSION-pglogical \
         postgresql-$PG_VERSION-pgvector \
         ldap-utils libldap-2.5-0 libsasl2-modules-gssapi-mit libldap-common \
-        alien vmtouch openssh-server libaom3=3.3.0-1ubuntu0.1 && \
-    wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8 && \
-    echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" >> /etc/apt/sources.list.d/pgdg.list && \
-    apt-get update && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+        alien vmtouch openssh-server libaom3=3.3.0-1ubuntu0.1
+
 
 # Локализация
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8 && \
