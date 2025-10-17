@@ -90,6 +90,11 @@ RUN apt-get update && \
         hostname gettext jq vim \
         ldap-utils libldap-2.5-0 libsasl2-modules-gssapi-mit libldap-common \
         alien vmtouch openssh-server libaom3=3.3.0-1ubuntu0.1
+# Настройка пользователя и группы
+RUN groupmod -n postgres tape && \
+    adduser --uid 26 --gid 26 postgres
+
+# Установка PostgreSQL и расширений
 RUN apt-get install -y --no-install-recommends postgresql-$PG_VERSION postgresql-contrib-$PG_VERSION postgresql-plpython3-$PG_VERSION \
         postgresql-$PG_VERSION-hypopg postgresql-$PG_VERSION-powa postgresql-$PG_VERSION-orafce \
         postgresql-$PG_VERSION-cron postgresql-$PG_VERSION-repack postgresql-$PG_VERSION-pgaudit \
@@ -120,10 +125,8 @@ COPY scripts/postgresql.conf /tmp/postgresql.conf
 COPY scripts/fix_permission.sh /usr/libexec/fix-permissions
 COPY scripts/* /
 
-# Настройка пользователя и прав
-RUN groupmod -n postgres tape && \
-    adduser --uid 26 --gid 26 postgres && \
-    mv /var/lib/postgresql /var/lib/pgsql && \
+# Настройка прав
+RUN mv /var/lib/postgresql /var/lib/pgsql && \
     sed -i "s/postgres:!/postgres:*/" /etc/shadow && \
     sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/" /etc/ssh/sshd_config && \
     sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config && \
