@@ -78,6 +78,7 @@ ENV POD_IDENTITY="node1" \
     PATH="/usr/lib/postgresql/$PG_VERSION/bin/:${PATH}"
 
 # Установка runtime-зависимостей
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y gnupg wget && \
     echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" >> /etc/apt/sources.list.d/pgdg.list && \
