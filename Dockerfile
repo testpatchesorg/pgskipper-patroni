@@ -112,7 +112,7 @@ RUN wget https://github.com/zubkov-andrei/pg_profile/releases/download/4.8/pg_pr
 RUN fallocate -l 1G /swapfile && \
     chmod 600 /swapfile && \
     mkswap /swapfile && \
-    swapon /swapfile && \
+    sudo swapon /swapfile && \
     echo '/swapfile none swap sw 0 0' | tee -a /etc/fstab
 
 # Install pgsentinel and pg_dbms_stats
