@@ -75,5 +75,5 @@ jobs:
             CUSTOM_PG_VERSION=${{ matrix.component.custom_pg_version }}
           platforms: linux/amd64
           push: ${{ env.PUSH }}
-          tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.component.name }}:${{ env.TAG_NAME }}
+          tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.component.name }}:custom-patches-${{ matrix.component.custom_pg_version }}
           provenance: false
