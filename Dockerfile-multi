@@ -50,11 +50,11 @@ RUN git clone https://github.com/pgsentinel/pgsentinel.git && \
     make install && \
     cd .. && rm -rf pgsentinel pg_dbms_stats
 
-# Установка Python-зависимостей
-COPY scripts/pip.conf /root/.pip/pip.conf
-RUN python3 -m pip install -U setuptools==78.1.1 wheel==0.38.0 && \
-    python3 -m pip install psutil patroni[kubernetes,etcd]==3.3.5 psycopg2-binary==2.9.5 requests python-dateutil urllib3 six prettytable --no-cache && \
-    rm -rf /root/.cache/pip
+# # Установка Python-зависимостей
+# COPY scripts/pip.conf /root/.pip/pip.conf
+# RUN python3 -m pip install -U setuptools==78.1.1 wheel==0.38.0 && \
+#     python3 -m pip install psutil patroni[kubernetes,etcd]==3.3.5 psycopg2-binary==2.9.5 requests python-dateutil urllib3 six prettytable --no-cache && \
+#     rm -rf /root/.cache/pip
 
 # Этап 2: Runtime — минимальный образ
 FROM ubuntu:22.04
