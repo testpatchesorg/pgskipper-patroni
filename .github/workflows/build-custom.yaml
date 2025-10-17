@@ -29,6 +29,9 @@ env:
 
 jobs:
   multiplatform_build:
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
