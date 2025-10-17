@@ -24,15 +24,15 @@ jobs:
       matrix:
         component:
           - name: pgskipper-patroni-17
-            file: Dockerfile
+            file: Dockerfile-multi
             context: ""
             pg_version: "17"
           - name: pgskipper-patroni-16
-            file: Dockerfile
+            file: Dockerfile-multi
             context: ""
             pg_version: "16"
           - name: pgskipper-patroni-15
-            file: Dockerfile
+            file: Dockerfile-multi
             context: ""
             pg_version: "15"
     runs-on: ubuntu-24.04
