@@ -35,12 +35,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        component:
-          - name: pgskipper-patroni-17
-            file: Dockerfile-multi-custom
-            context: ""
-            pg_version: ${{ inputs.postgres_version || '17' }}
-            custom_pg_version: ${{ inputs.custom_postgres_version || '17.6-2' }}
+        targetarch:
+          - arm64
+          - amd64
+
     runs-on: ubuntu-24.04
     steps:
       - name: Validate
@@ -68,12 +66,13 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           no-cache: true
-          context: ${{ matrix.component.context }}
-          file: ${{ matrix.component.file }}
+          context: '.'
+          file: Dockerfile-multi-custom
           build-args: |
-            PG_VERSION=${{ matrix.component.pg_version }}
-            CUSTOM_PG_VERSION=${{ matrix.component.custom_pg_version }}
-          platforms: linux/amd64,linux/arm64
+            PG_VERSION=${{ inputs.postgres_version }}
+            CUSTOM_PG_VERSION=${{ inputs.custom_postgres_version }}
+            TARGETARCH=${{ matrix.targetarch }}
+          platforms: linux/${{ matrix.targetarch }}
           push: ${{ env.PUSH }}
-          tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.component.name }}:custom-patches-${{ matrix.component.custom_pg_version }}
+          tags: ghcr.io/${{ github.repository_owner }}/pgskipper-patroni-${{ inputs.postgres_version}}:custom-patches-${{ inputs.custom_postgres_version }}
           provenance: false
