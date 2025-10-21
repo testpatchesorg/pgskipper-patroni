@@ -25,9 +25,6 @@ on:
         default: true
         required: false
 
-env:
-  TAG_NAME: custom-patches-${{ inputs.custom_postgres_version || github.event.client_payload.custom_postgres_version }}
-
 jobs:
   multiplatform_build:
     permissions:
@@ -52,12 +49,13 @@ jobs:
             echo "PG_VERSION=${{ inputs.postgres_version }}" >> $GITHUB_ENV
             echo "CUSTOM_PG_VERSION=${{ inputs.custom_postgres_version }}" >> $GITHUB_ENV
             echo "PUSH=${{ inputs.publish_docker }}" >> $GITHUB_ENV
+            echo "TAG_NAME=custom-patches-${{ inputs.postgres_version }}-${{ inputs.custom_postgres_version }}" >> $GITHUB_ENV
           else
             echo "PG_VERSION=${{ github.event.client_payload.postgres_version }}" >> $GITHUB_ENV
             echo "CUSTOM_PG_VERSION=${{ github.event.client_payload.custom_postgres_version }}" >> $GITHUB_ENV
             echo "PUSH=true" >> $GITHUB_ENV
+            echo "TAG_NAME=custom-patches-${{ github.event.client_payload.postgres_version }}-${{ github.event.client_payload.custom_postgres_version }}" >> $GITHUB_ENV
           fi
-          echo "TAG_NAME=custom-patches-${PG_VERSION}-${CUSTOM_PG_VERSION}" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v4
