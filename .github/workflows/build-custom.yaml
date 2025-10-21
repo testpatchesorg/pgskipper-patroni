@@ -2,7 +2,7 @@ name: Build Artifacts with custom patches
 run-name: "PG ${{ inputs.postgres_version }}. Custom PG ${{ inputs.custom_postgres_version }}"
 on:
   repository_dispatch:
-    types: [build-custom]
+    types: [pg-patched-build]
   workflow_dispatch:
     inputs:
       postgres_version:
