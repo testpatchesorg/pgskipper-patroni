@@ -1,7 +1,6 @@
 # Этап 1: Сборка (builder) — установка dev-пакетов, компиляция расширений
 FROM ubuntu:22.04 AS builder
 
-ARG TARGETARCH
 ARG PG_VERSION=15
 ENV PG_VERSION=$PG_VERSION
 ENV POSTGRESQL_VERSION=$PG_VERSION
@@ -61,6 +60,7 @@ RUN git clone https://github.com/pgsentinel/pgsentinel.git && \
 FROM ubuntu:22.04
 
 ARG PG_VERSION=15
+ARG TARGETARCH
 ENV POD_IDENTITY="node1" \
     PATRONI_TTL=60 \
     PATRONI_LOOP_WAIT=10 \
