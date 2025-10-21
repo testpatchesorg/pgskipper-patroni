@@ -1,6 +1,8 @@
 name: Build Artifacts with custom patches
 run-name: "PG ${{ inputs.postgres_version }}. Custom PG ${{ inputs.custom_postgres_version }}"
 on:
+  repository_dispatch:
+    types: [build-custom]
   workflow_dispatch:
     inputs:
       postgres_version:
@@ -24,8 +26,7 @@ on:
         required: false
 
 env:
-  TAG_NAME: ${{ github.event.release.tag_name || github.ref }}
-  PUSH: ${{ (github.event_name != 'workflow_dispatch' || inputs.publish_docker) && github.actor != 'dependabot[bot]' }}
+  TAG_NAME: custom-patches-${{ inputs.custom_postgres_version || github.event.client_payload.custom_postgres_version }}
 
 jobs:
   multiplatform_build:
@@ -47,6 +48,17 @@ jobs:
             echo -e "\033[91mManual workflow run on tags is not allowed!\033[0m"
             exit 1
           fi
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "PG_VERSION=${{ inputs.postgres_version }}" >> $GITHUB_ENV
+            echo "CUSTOM_PG_VERSION=${{ inputs.custom_postgres_version }}" >> $GITHUB_ENV
+            echo "PUSH=${{ inputs.publish_docker }}" >> $GITHUB_ENV
+          else
+            echo "PG_VERSION=${{ github.event.client_payload.postgres_version }}" >> $GITHUB_ENV
+            echo "CUSTOM_PG_VERSION=${{ github.event.client_payload.custom_postgres_version }}" >> $GITHUB_ENV
+            echo "PUSH=true" >> $GITHUB_ENV
+          fi
+          echo "TAG_NAME=custom-patches-${PG_VERSION}-${CUSTOM_PG_VERSION}" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -59,9 +71,6 @@ jobs:
           registry: ghcr.io
           username: ${GITHUB_ACTOR}
           password: ${{secrets.GITHUB_TOKEN}}
-      - name: Prepare Tag
-        run: echo "TAG_NAME=$(echo ${TAG_NAME} | sed 's@refs/tags/@@;s@refs/heads/@@;s@/@_@g')" >> $GITHUB_ENV
-
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -69,10 +78,10 @@ jobs:
           context: '.'
           file: Dockerfile-multi-custom
           build-args: |
-            PG_VERSION=${{ inputs.postgres_version }}
-            CUSTOM_PG_VERSION=${{ inputs.custom_postgres_version }}
+            PG_VERSION=${{ env.PG_VERSION }}
+            CUSTOM_PG_VERSION=${{ env.CUSTOM_PG_VERSION }}
             TARGETARCH=${{ matrix.targetarch }}
           platforms: linux/${{ matrix.targetarch }}
           push: ${{ env.PUSH }}
-          tags: ghcr.io/${{ github.repository_owner }}/pgskipper-patroni-${{ inputs.postgres_version}}:custom-patches-${{ inputs.custom_postgres_version }}
+          tags: ghcr.io/${{ github.repository_owner }}/pgskipper-patroni-${{ inputs.postgres_version}}:${{ env.TAG_NAME }}
           provenance: false
