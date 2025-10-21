@@ -1,5 +1,5 @@
 name: Build Artifacts with custom patches
-run-name: "PG ${{ inputs.postgres_version }}. Custom PG ${{ inputs.custom_postgres_version }}"
+run-name: "PG ${{ inputs.postgres_version || github.event.client_payload.postgres_version }}. Custom PG ${{ inputs.custom_postgres_version || github.event.client_payload.custom_postgres_version }}"
 on:
   repository_dispatch:
     types: [pg-patched-build]
@@ -81,5 +81,5 @@ jobs:
             TARGETARCH=${{ matrix.targetarch }}
           platforms: linux/${{ matrix.targetarch }}
           push: ${{ env.PUSH }}
-          tags: ghcr.io/${{ github.repository_owner }}/pgskipper-patroni-${{ inputs.postgres_version}}:${{ env.TAG_NAME }}
+          tags: ghcr.io/${{ github.repository_owner }}/pgskipper-patroni-${{ env.PG_VERSION }}:${{ env.TAG_NAME }}
           provenance: false
