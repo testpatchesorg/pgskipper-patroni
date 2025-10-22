@@ -97,7 +97,8 @@ RUN groupmod -n postgres tape && \
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG CUSTOM_PG_VERSION=17.6-2
-ARG CUSTOM_PG_URL=https://github.com/testpatchesorg/postgres-patches/releases/download/${CUSTOM_PG_VERSION}
+ARG PATCHED_RELEASE=17.6-2
+ARG CUSTOM_PG_URL=https://github.com/testpatchesorg/postgres-patches/releases/download/${PATCHED_RELEASE}
 RUN mkdir -p ./pgdebs && cd ./pgdebs && \
     wget ${CUSTOM_PG_URL}/libecpg-compat3_${CUSTOM_PG_VERSION}_${TARGETARCH}.deb \
     ${CUSTOM_PG_URL}/libecpg-dev_${CUSTOM_PG_VERSION}_${TARGETARCH}.deb \

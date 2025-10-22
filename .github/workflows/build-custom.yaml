@@ -19,6 +19,11 @@ on:
         type: string
         default: "17.6-2"
         required: false
+      patched_release:
+        description: "Patched release identifier (e.g. 17.3-1)"
+        type: string
+        default: "17.6-2"
+        required: false
       publish_docker:
         description: "Publish image to ghcr.io/github.repository_owner/pgskipper-patroni"
         type: boolean
@@ -49,12 +54,14 @@ jobs:
             echo "PG_VERSION=${{ inputs.postgres_version }}" >> $GITHUB_ENV
             echo "CUSTOM_PG_VERSION=${{ inputs.custom_postgres_version }}" >> $GITHUB_ENV
             echo "PUSH=${{ inputs.publish_docker }}" >> $GITHUB_ENV
-            echo "TAG_NAME=custom-patches-${{ inputs.postgres_version }}-${{ inputs.custom_postgres_version }}" >> $GITHUB_ENV
+            echo "TAG_NAME=custom-patches-${{ inputs.postgres_version }}-${{ inputs.patched_release }}" >> $GITHUB_ENV
+            echo "PATCHED_RELEASE=${{ inputs.patched_release }}" >> $GITHUB_ENV
           else
             echo "PG_VERSION=${{ github.event.client_payload.postgres_version }}" >> $GITHUB_ENV
             echo "CUSTOM_PG_VERSION=${{ github.event.client_payload.custom_postgres_version }}" >> $GITHUB_ENV
             echo "PUSH=true" >> $GITHUB_ENV
-            echo "TAG_NAME=custom-patches-${{ github.event.client_payload.postgres_version }}-${{ github.event.client_payload.custom_postgres_version }}" >> $GITHUB_ENV
+            echo "TAG_NAME=custom-patches-${{ github.event.client_payload.postgres_version }}-${{ github.event.client_payload.patched_release }}" >> $GITHUB_ENV
+            echo "PATCHED_RELEASE=${{ github.event.client_payload.patched_release }}" >> $GITHUB_ENV
           fi
 
       - name: Checkout
@@ -78,6 +85,7 @@ jobs:
           build-args: |
             PG_VERSION=${{ env.PG_VERSION }}
             CUSTOM_PG_VERSION=${{ env.CUSTOM_PG_VERSION }}
+            PATCHED_RELEASE=${{ env.PATCHED_RELEASE}}
             TARGETARCH=${{ matrix.targetarch }}
           platforms: linux/${{ matrix.targetarch }}
           push: ${{ env.PUSH }}
