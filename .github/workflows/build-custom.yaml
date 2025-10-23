@@ -1,0 +1,93 @@
+name: Build Artifacts with custom patches
+run-name: "PG ${{ inputs.postgres_version || github.event.client_payload.postgres_version }}. Custom PG ${{ inputs.custom_postgres_version || github.event.client_payload.custom_postgres_version }}"
+on:
+  repository_dispatch:
+    types: [pg-patched-build]
+  workflow_dispatch:
+    inputs:
+      postgres_version:
+        description: "PostgreSQL version to build (15, 16, 17)"
+        type: choice
+        options:
+          - "15"
+          - "16"
+          - "17"
+        default: "17"
+        required: false
+      custom_postgres_version:
+        description: "Custom PostgreSQL version label (e.g. 17.3-1)"
+        type: string
+        default: "17.6-2"
+        required: false
+      patched_release:
+        description: "Patched release identifier (e.g. 17.3-1)"
+        type: string
+        default: "17.6-2"
+        required: false
+      publish_docker:
+        description: "Publish image to ghcr.io/github.repository_owner/pgskipper-patroni"
+        type: boolean
+        default: true
+        required: false
+
+jobs:
+  multiplatform_build:
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        targetarch:
+          - arm64
+          - amd64
+
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Validate
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.ref }}" == refs/tags* ]]; then
+            echo -e "\033[91mManual workflow run on tags is not allowed!\033[0m"
+            exit 1
+          fi
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "PG_VERSION=${{ inputs.postgres_version }}" >> $GITHUB_ENV
+            echo "CUSTOM_PG_VERSION=${{ inputs.custom_postgres_version }}" >> $GITHUB_ENV
+            echo "PUSH=${{ inputs.publish_docker }}" >> $GITHUB_ENV
+            echo "TAG_NAME=custom-patches-${{ inputs.postgres_version }}-${{ inputs.patched_release }}" >> $GITHUB_ENV
+            echo "PATCHED_RELEASE=${{ inputs.patched_release }}" >> $GITHUB_ENV
+          else
+            echo "PG_VERSION=${{ github.event.client_payload.postgres_version }}" >> $GITHUB_ENV
+            echo "CUSTOM_PG_VERSION=${{ github.event.client_payload.custom_postgres_version }}" >> $GITHUB_ENV
+            echo "PUSH=true" >> $GITHUB_ENV
+            echo "TAG_NAME=custom-patches-${{ github.event.client_payload.postgres_version }}-${{ github.event.client_payload.patched_release }}" >> $GITHUB_ENV
+            echo "PATCHED_RELEASE=${{ github.event.client_payload.patched_release }}" >> $GITHUB_ENV
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${GITHUB_ACTOR}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          no-cache: true
+          context: '.'
+          file: Dockerfile-multi-custom
+          build-args: |
+            PG_VERSION=${{ env.PG_VERSION }}
+            CUSTOM_PG_VERSION=${{ env.CUSTOM_PG_VERSION }}
+            PATCHED_RELEASE=${{ env.PATCHED_RELEASE}}
+            TARGETARCH=${{ matrix.targetarch }}
+          platforms: linux/${{ matrix.targetarch }}
+          push: ${{ env.PUSH }}
+          tags: ghcr.io/${{ github.repository_owner }}/pgskipper-patroni-${{ env.PG_VERSION }}:${{ env.TAG_NAME }}
+          provenance: false
