@@ -34,12 +34,9 @@ RUN echo "deb [trusted=yes] http://apt.postgresql.org/pub/repos/apt jammy-pgdg m
 RUN ls -la /etc/apt/
 RUN apt-get -y update
 RUN apt-get -o DPkg::Options::="--force-confnew" -y dist-upgrade
-RUN apt clean && apt-get update && \
-    apt-get install -y --allow-downgrades gcc-12 cpp-12 gcc-12-base libgcc-12-dev libstdc++6 libgcc-s1 libnsl2 gnupg
-RUN apt-get --no-install-recommends install -y python3.11 python3-pip python3-dev libpq-dev cython3 wget curl && \
-    wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
-
+RUN apt-get update && \
+    apt-get install -y --allow-downgrades gcc-12 cpp-12 gcc-12-base libgcc-12-dev libstdc++6 libgcc-s1 libnsl2
+RUN apt-get --no-install-recommends install -y python3.11 python3-pip python3-dev libpq-dev cython3 wget curl
 
 # rename 'tape' group to 'postgres' and creating postgres user - hask for ubuntu
 RUN groupmod -n postgres tape
@@ -109,7 +106,7 @@ RUN wget https://github.com/zubkov-andrei/pg_profile/releases/download/4.8/pg_pr
     rm -rf pg_profile--4.8.tar.gz
 
 # Install pgsentinel and pg_dbms_stats
-RUN apt clean && apt update && apt-get install -y git make gcc && \
+RUN apt update && apt-get install -y git make gcc && \
     git clone https://github.com/pgsentinel/pgsentinel.git && \
     cd pgsentinel && \
     git checkout 0218c2147daab0d2dbbf08433cb480163d321839 && \
